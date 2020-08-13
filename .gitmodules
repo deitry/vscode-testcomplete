@@ -1,0 +1,3 @@
+[submodule "testcomplete-ts-api"]
+	path = testcomplete-ts-api
+	url = https://github.com/deitry/testcomplete-ts-api
