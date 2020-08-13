@@ -6,18 +6,60 @@
 	"engines": {
 		"vscode": "^1.47.0"
 	},
+	"repository": {
+		"url": "https://github.com/deitry/vscode-testcomplete",
+		"type": "git"
+	},
+	"icon": "images/logo.png",
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"onCommand:testcomplete.initialize",
+		"onCommand:testcomplete.codeGeneration",
+		"workspaceContains:**/*.mds"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
+				"command": "testcomplete.initialize",
+				"title": "Initialize TestComplete support"
+			},
+			{
+				"command": "testcomplete.codeGeneration",
+				"title": "Runs code generation of project-related TestComplete modules"
+			}
+		],
+		"configuration": [
+			{
+				"title": "testcomplete",
+				"properties": {
+					"testcomplete.regenerateModules": {
+						"scope": "window",
+						"type": "boolean",
+						"default": true,
+						"description": "If true, will re-generate project-related modules when project files will be changed."
+					},
+					"testcomplete.projects": {
+						"scope": "resource",
+						"description": "List of project to process",
+						"type": [
+							"string", "array"
+						],
+						"items": "string",
+						"default": "./*.mds"
+					},
+					"testcomplete.codeGeneration.outputFolders":
+					{
+						"scope": "resource",
+						"type": [
+							"string", "array", "null"
+						],
+						"default": null,
+						"description": "If specified, project-related modules will be put into these folders. Count must match `testcomplete.projects` configuration."
+					}
+				}
 			}
 		]
 	},
