@@ -6,6 +6,7 @@
 
 import * as vscode from "vscode";
 import * as path from "path";
+import { generateTestedAppsImpl } from "./gen-testedaps";
 
 /** Entry point for project-related modules generation */
 export async function codeGeneration()
@@ -104,12 +105,4 @@ console.log("generateTestedApps()");
 	// - generate
 	let content = generateTestedAppsImpl(filePath);
 	await vscode.workspace.fs.writeFile(targetFile, Buffer.from(content, 'utf8'));
-}
-
-/** Implementation of TestedApps code generation */
-function generateTestedAppsImpl(from: string): string
-{
-	let content = "";
-	content += "/** tested apps */";
-	return content;
 }
