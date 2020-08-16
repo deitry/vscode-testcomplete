@@ -73,10 +73,10 @@ const elementClasses = [
 
 function convertWndClass(wndClass: string): string
 {
-    if (wndClass in windowClasses)
+    if (windowClasses.some(entry => entry == wndClass))
         return 'Window';
 
-    if (wndClass in elementClasses)
+    if (elementClasses.some(entry => entry == wndClass))
         return 'Element';
 
     if (wndClass.startsWith('Afx:') || wndClass.startsWith('Shell '))
@@ -131,8 +131,8 @@ function getTypeFromProperties(el: IKeyObject): string
                 case 'ClrFullClassName':
                     let splitted = property.Value.at_Value.split('.');
                     return splitted[splitted.length - 1];
-                default:
-                    return property.Value.at_Value;
+                // default:
+                //     return property.Value.at_Value;
             }
         }
     }
@@ -183,7 +183,7 @@ function containsKeyword(elName: string, keyword: string): boolean
 /** Tries to guess type of element by its name. */
 function inferTypeFromName(elName: string): string
 {
-    let name = elName.toLowerCase();
+    elName = elName.toLowerCase();
 
     if (containsKeyword(elName, 'radiobutton'))
         return 'RadioButton';
@@ -195,8 +195,10 @@ function inferTypeFromName(elName: string): string
         return 'Button';
     else if (containsKeyword(elName, 'form'))
         return 'Form';
-    else if (containsKeyword(elName, 'window'))
+    else if (containsKeywords(elName, ['window', 'wnd']))
         return 'Window';
+    else if (containsKeywords(elName, ['dialog', 'dlg']))
+        return 'Dialog';
     else if (containsKeywords(elName, ['edit', 'textbox', 'input']))
         return 'Edit';
 

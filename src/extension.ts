@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { codeGeneration, codeGeneration as generateProjectModules, generateNameMapping, generateProject, generateTestedApps } from './codegen';
+import * as path from 'path';
+import { codeGeneration, generateNameMapping, generateProject, generateTestedApps } from './codegen';
 import { generateJsConfig } from './jsconf';
 
 /**
@@ -8,7 +9,7 @@ import { generateJsConfig } from './jsconf';
 export function activate(context: vscode.ExtensionContext)
 {
 	// TODO: if (config.regenerate && filesChanged)
-	generateProjectModules();
+	// codeGeneration();
 
 	let projectWatcher = vscode.workspace.createFileSystemWatcher("**/*.mds", true, false, true);
 	projectWatcher.onDidChange(uri => generateProject(uri.fsPath));
@@ -26,14 +27,19 @@ export function activate(context: vscode.ExtensionContext)
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
 			'testcomplete.codeGeneration',
-			generateProjectModules));
+			codeGeneration));
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
-			'testcomplete.initialize', () =>
+			'testcomplete.initialize', async () =>
 	{
-		generateProjectModules();
-		generateJsConfig();
+		let projectFiles = await vscode.workspace.findFiles('**/*.mds');
+		projectFiles.forEach(projectFile =>
+		{
+			const scriptPath = path.dirname(projectFile.fsPath) + path.sep + 'Script' + path.sep;
+			generateJsConfig(scriptPath);
+			codeGeneration(projectFile.fsPath);
+		});
 	}));
 }
 

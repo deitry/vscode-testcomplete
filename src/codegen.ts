@@ -11,12 +11,12 @@ import { generateProjectImpl } from "./gen-project";
 import { generateNameMappingImpl } from "./gen-nameMapping";
 
 /** Entry point for project-related modules generation */
-export async function codeGeneration()
+export async function codeGeneration(projectPath: string)
 {
 	// TODO: parse projects and target folders from configuration
-	// generateNameMapping("");
-	// generateProject("");
-	// generateTestedApps("");
+	generateProject(projectPath);
+	generateNameMapping(path.resolve(path.dirname(projectPath), './NameMapping/NameMapping.tcNM'));
+	generateTestedApps(path.resolve(path.dirname(projectPath), './TestedApps/TestedApps.tcTAs'));
 }
 
 /** Generates TypeScript module for name mapping */
@@ -48,14 +48,16 @@ export async function generateProject(filePath: string)
 
 }
 
-async function getProjectName(filePath: string): Promise<string>
+export async function getProjectName(filePath: string): Promise<string>
 {
 	// if given file is project itself
 	if (filePath.endsWith(".mds"))
 		return path.basename(filePath, ".mds");
 
 	let pattern = path.dirname(filePath);
-	pattern = path.resolve(pattern, "../*.mds");
+	pattern = filePath.endsWith('Script\\') || filePath.endsWith('Script/')
+		? path.resolve(pattern, "*.mds")
+		: path.resolve(pattern, "../*.mds");
 	pattern = vscode.workspace.asRelativePath(pattern);
 
 	let files = await vscode.workspace.findFiles(pattern);
