@@ -292,7 +292,7 @@ export function generateProjectImpl(baseFile: string): string
 /**
  * Provides interface to current project parameters.
  *
- * NOTE: Auto-generated from ./Revizto5Tests/Revizto5Tests.mds.
+ * NOTE: Auto-generated from ${vscode.workspace.asRelativePath(path.resolve(baseFile))}
  */
 declare const Project: TestComplete.Generated.Project;
 `;
