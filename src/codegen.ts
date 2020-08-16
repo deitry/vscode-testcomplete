@@ -8,6 +8,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { generateTestedAppsImpl } from "./gen-testedaps";
 import { generateProjectImpl } from "./gen-project";
+import { generateNameMappingImpl } from "./gen-nameMapping";
 
 /** Entry point for project-related modules generation */
 export async function codeGeneration()
@@ -30,11 +31,6 @@ export async function generateNameMapping(filePath: string)
 	// - generate
 	let content = generateNameMappingImpl(filePath);
 	await vscode.workspace.fs.writeFile(targetFile, Buffer.from(content, 'utf8'));
-}
-
-function generateNameMappingImpl(filePath: string): string
-{
-	return "/** nameMapping */";
 }
 
 /** Generates TypeScript module for project variables */
