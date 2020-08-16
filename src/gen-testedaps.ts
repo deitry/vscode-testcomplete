@@ -1,6 +1,5 @@
 import {parse} from 'fast-xml-parser';
 import {readFileSync} from 'fs';
-import * as path from 'path';
 import * as vscode from 'vscode';
 
 interface IRunAsParams extends ITestedAppParams {

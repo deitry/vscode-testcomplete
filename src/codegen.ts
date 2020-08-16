@@ -7,6 +7,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { generateTestedAppsImpl } from "./gen-testedaps";
+import { generateProjectImpl } from "./gen-project";
 
 /** Entry point for project-related modules generation */
 export async function codeGeneration()
@@ -49,11 +50,6 @@ export async function generateProject(filePath: string)
 	let content = generateProjectImpl(filePath);
 	await vscode.workspace.fs.writeFile(targetFile, Buffer.from(content, 'utf8'));
 
-}
-
-function generateProjectImpl(filePath: string): string
-{
-	return "/** project */";
 }
 
 async function getProjectName(filePath: string): Promise<string>
