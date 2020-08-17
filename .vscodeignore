@@ -8,3 +8,5 @@ vsc-extension-quickstart.md
 **/tslint.json
 **/*.map
 **/*.ts
+!testcomplete-ts-api/**/*.d.ts
+!testcomplete-ts-api/**/tsconfig.json

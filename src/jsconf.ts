@@ -27,9 +27,7 @@ export async function generateJsConfig(baseFilePath: string)
 	await vscode.workspace.applyEdit(wsedit);
 
     let extension = vscode.extensions.getExtension("deitry.testcomplete");
-    let extensionPath = extension
-        ? path.resolve(extension?.extensionPath, '..')
-        : path.resolve(__filename, "../..");
+    let extensionPath = path.resolve(extension?.extensionPath ?? __filename, `../..`)
 
     const jsConfigContent =
 `{

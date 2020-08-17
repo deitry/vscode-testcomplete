@@ -3,7 +3,7 @@
 	"displayName": "TestComplete",
 	"description": "TestComplete API support in VS Code",
 	"publisher": "deitry",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.47.0"
 	},
@@ -22,8 +22,10 @@
 	"categories": [
 		"Other"
 	],
+	"types": "./testcomplete-ts-api/api/TestComplete.d.ts",
 	"files": [
-		"./testcomplete-ts-api/**/*"
+		"./testcomplete-ts-api/**/*",
+		"./testcomplete-ts-api/api/TestComplete.d.ts"
 	],
 	"activationEvents": [
 		"onCommand:testcomplete.initialize",
