@@ -1,65 +1,64 @@
-# vscode-testcomplete README
+# TestComplete API in VS Code
 
-This is the README for your extension "vscode-testcomplete". After writing up a brief description, we recommend including the following sections.
+Unofficial VS Code extension that allows to combine TestComplete API for JavaScript projects with type check provided by JSDoc + TypeScript.
 
-## Features
+Base TestComplete API is provided by [this repo](https://github.com/deitry/testcomplete-ts-api) which is bundled with extension.
+Project-related modules are generated on the run into `.vscode/.tc/<ProjectName>/` folder.
+This extension is a mere wrapper that simplifies configuration and runs code generation automatically.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+If you want to have flexible control over paths and modules, consider to directely use TypeScript API from base repo.
+Note that extension uses slightly different TypeScript-based code generation for project-related modules so results may differ from Python-based generators in base repo.
 
-For example if there is an image subfolder under your extension project workspace:
+## How to use
 
-\!\[feature X\]\(images/feature-x.png\)
+Run from Command palette:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+```
+> TestComplete: Initialize support
+```
 
-## Requirements
+This will generate `jsconfig.json` under `Script/` folder along with project-related modules.
+This file contains paths to modules used for type check.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Then you may run:
 
-## Extension Settings
+```
+> TestComplete: Generate project-related modules
+```
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+This will only generate project-related modules without touching `jsconfig.json` in `Script/` folder or `tsconfig.json` in `.vscode/.tc/<ProjectName>` folder:
+- `nameMapping.d.ts` declares `Aliases` namespace which holds mapped objects.
+- `project.d.ts` declares `Project.Variables` and also provides values of some variables in JSDoc style.
+- `testedApps.d.ts` declares `TestedApps` namespace that lists all of your tested apps.
+Paths to tested apps and command line arguments provided in JSDoc style.
 
-For example:
+Note that any changes in these files will be overridden after any command run.
 
-This extension contributes the following settings:
+Also extension is configured to automatically regenerate corresponding module after configuration is changed.
+For example, if you add new variable and save you `<PojectName>.mds`, corresponding `.vscode/.tc/<ProjectName>/project.d.ts` module will be regenerated.
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+## Known issues
 
-## Known Issues
+No configuration options are supported yet.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Plans on future release
 
-## Release Notes
+These are just plans, do not count that it will be implemented soon.
 
-Users appreciate release notes as you update your extension.
+- Configuration options
+  - Bool flags to enable automatic code generation
+  - Paths to generated modules and base API
 
-### 1.0.0
+- More support of project-related stuff:
+  - Project suite variables
+  - Local values of variables (currently only default values are shown in JSDoc way)
+  - Parse actual paths to project configs from `<ProjectName>.mds` file
 
-Initial release of ...
+- VS Code Tasks to run tests without manual launching TestComplete.
+  - Note that debugging TC tests in VS Code probably would never be possible
 
-### 1.0.1
+- Diagnostics (infos, warnings beside TypeScript checks)
+  - Suggestion to use fully qualified function names like `aqUtils.Delay` instead of just `Delay`
 
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- Better support for mapped objects
+  - Ability to change mapped objects properties via VS Code UI.

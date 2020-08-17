@@ -208,12 +208,11 @@ function getVarValue(variable: IVarTypeEnum): string
     switch (variable.at_Type)
     {
         case "String":
-        case "Password":
         case stringGuid:
-        case passwordGuid:
-            let value: string = "" + variable.DefValue.at_StrValue;
+            if (!variable.DefValue.at_StrValue)
+                return "\"\"";
+            let value: string = ("\"" + variable.DefValue.at_StrValue).split("\\").join("\\\\") + "\"";
             return value;
-            // return value.replace("\\", "\\\\");
         case "Integer":
         case integerGuid:
             return variable.DefValue.at_IntValue.toString();
@@ -222,7 +221,7 @@ function getVarValue(variable: IVarTypeEnum): string
             return variable.DefValue.at_FloatValue.toString();
         case "Boolean":
         case booleanGuid:
-            return "" + variable.DefValue.at_BoolValue;
+            return ("" + variable.DefValue.at_BoolValue).toLowerCase();
         default:
             return "";
     };
@@ -296,7 +295,6 @@ export function generateProjectImpl(baseFile: string): string
  */
 declare const Project: TestComplete.Generated.Project;
 `;
-
 
 	return content;
 }

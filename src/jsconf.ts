@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { getProjectName } from './codegen';
 
 /**
+ * Generates both jsconfig.json and tsconfig.json for project-related modules
  * @param path Path to scripts location where jsconfig should be created
  */
 export async function generateJsConfig(baseFilePath: string)
