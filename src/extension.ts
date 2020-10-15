@@ -26,8 +26,11 @@ export function activate(context: vscode.ExtensionContext)
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
-			'testcomplete.codeGeneration',
-			codeGeneration));
+			'testcomplete.codeGeneration', async () =>
+	{
+		let projectFiles = await vscode.workspace.findFiles('**/*.mds');
+		projectFiles.forEach(projectFile => codeGeneration(projectFile.fsPath));
+	}));
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
