@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { getProjectName } from './codegen';
+import * as fs from 'fs';
 
 /**
  * Generates both jsconfig.json and tsconfig.json for project-related modules
@@ -11,26 +12,68 @@ export async function generateJsConfig(baseFilePath: string)
 	if (!vscode.workspace.workspaceFolders?.length)
 		return;
 
-	let folder = vscode.workspace.workspaceFolders[0];
-    let projectName = await getProjectName(baseFilePath);
-    let generatedApiFolderPath = folder.uri.fsPath + "/.vscode/.tc/" + projectName;
-    let generatedApiFolder = vscode.Uri.file(folder.uri.fsPath + "/.vscode/.tc/" + projectName);
-    let generatedApiTsConfig = vscode.Uri.file(generatedApiFolderPath + '/tsconfig.json');
+	const folder = vscode.workspace.workspaceFolders[0];
+    const projectName = await getProjectName(baseFilePath);
+    const generatedApiFolderPath = folder.uri.fsPath + "/.vscode/.tc/" + projectName;
+    const generatedApiFolder = vscode.Uri.file(folder.uri.fsPath + "/.vscode/.tc/" + projectName);
+    const generatedApiTsConfig = vscode.Uri.file(generatedApiFolderPath + '/tsconfig.json');
 
-    let generatedApiFolderRelPath = path.relative(baseFilePath, generatedApiFolder.fsPath);
+    const generatedApiFolderRelPath = path.relative(baseFilePath, generatedApiFolder.fsPath);
     console.log("generateJsConfig for " + baseFilePath);
 
-	let targetFile = vscode.Uri.file(baseFilePath + path.sep + "jsconfig.json");
-	let wsedit = new vscode.WorkspaceEdit();
-	wsedit.createFile(targetFile, { overwrite: true });
-	wsedit.createFile(generatedApiTsConfig, { overwrite: true });
-	await vscode.workspace.applyEdit(wsedit);
+    const extension = vscode.extensions.getExtension("deitry.testcomplete");
+    const extensionPath = path.resolve(extension?.extensionPath ?? __filename, `../..`)
 
-    let extension = vscode.extensions.getExtension("deitry.testcomplete");
-    let extensionPath = path.resolve(extension?.extensionPath ?? __filename, `../..`)
+	const targetFile = vscode.Uri.file(baseFilePath + path.sep + "jsconfig.json");
 
-    const jsConfigContent =
-`{
+    
+    if (!UpdatePathIfFileExists(targetFile, extensionPath))
+    {
+        let wsedit = new vscode.WorkspaceEdit();
+        wsedit.createFile(targetFile, { overwrite: true });
+        await vscode.workspace.applyEdit(wsedit);
+        
+        const jsConfigContent = getJsConfigContent(extensionPath, generatedApiFolderRelPath);
+
+        await vscode.workspace.fs.writeFile(targetFile, Buffer.from(jsConfigContent, 'utf8'));
+    }
+
+    if (!UpdatePathIfFileExists(generatedApiTsConfig, extensionPath))
+    {
+        let wsedit = new vscode.WorkspaceEdit();
+        wsedit.createFile(generatedApiTsConfig, { overwrite: true });
+        await vscode.workspace.applyEdit(wsedit);
+
+        const tsConfigContent = getTsConfigContent(extensionPath);
+
+        await vscode.workspace.fs.writeFile(generatedApiTsConfig, Buffer.from(tsConfigContent, 'utf8'));
+    }
+}
+
+function UpdatePathIfFileExists(targetFile: vscode.Uri, extensionPath: string): boolean
+{
+    if (fs.existsSync(targetFile.fsPath))
+    {
+        let fileContent = fs.readFileSync(targetFile.fsPath);
+        let newContent = "";
+        for (let line of fileContent.toString().split(/[\r\n]+/))
+        {
+            if (line.indexOf("testcomplete-ts-api/api/*.d.ts") >= 0)
+                line = `        "${extensionPath.split('\\').join('/')}/testcomplete-ts-api/api/*.d.ts",`;
+            
+            newContent += line + '\n';
+        }
+
+        fs.writeFileSync(targetFile.fsPath, newContent);
+        return true;
+    }
+
+    return false;
+}
+
+function getJsConfigContent(extensionPath: string, generatedApiFolderRelPath: string): string
+{ 
+    return `{
     "compilerOptions": {
         "target": "es6",
         "checkJs": true,
@@ -45,9 +88,11 @@ export async function generateJsConfig(baseFilePath: string)
     ],
 }
 `;
+}
 
-    const tsConfigContent =
-`{
+function getTsConfigContent(extensionPath: string): string
+{
+    return `{
     "compilerOptions": {
         "noLib": false,
         "target": "es6",
@@ -64,6 +109,4 @@ export async function generateJsConfig(baseFilePath: string)
     ],
 }
 `;
-    await vscode.workspace.fs.writeFile(targetFile, Buffer.from(jsConfigContent, 'utf8'));
-    await vscode.workspace.fs.writeFile(generatedApiTsConfig, Buffer.from(tsConfigContent, 'utf8'));
 }
