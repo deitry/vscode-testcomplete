@@ -99,8 +99,9 @@ function getTypeFromProperties(el: IKeyObject): string
 
     if ('forEach' in el.Properties.Property)
     {
-        el?.Properties?.Property.forEach(property =>
+        for (let i = 0; i < el.Properties.Property.length; i++)
         {
+            let property = el.Properties.Property[i];
             switch (property.at_Name)
             {
                 case 'ObjectType':
@@ -112,10 +113,10 @@ function getTypeFromProperties(el: IKeyObject): string
                 case 'ClrFullClassName':
                     let splitted = property.Value.at_Value.split('.');
                     return splitted[splitted.length - 1];
-                default:
-                    return property.Value.at_Value;
+                // default:
+                //     return property.Value.at_Value;
             };
-        });
+        }
     }
     else
     {
@@ -187,11 +188,11 @@ function inferTypeFromName(elName: string): string
 {
     elName = elName.toLowerCase();
 
-    if (containsKeyword(elName, 'radiobutton'))
+    if (containsKeywords(elName, ['radiobutton', 'rb']))
         return 'RadioButton';
     else if (containsKeyword(elName, 'combobox'))
         return 'ComboBox';
-    else if (containsKeyword(elName, 'checkbox'))
+    else if (containsKeywords(elName, ['checkbox', 'cb']))
         return 'CheckBox';
     else if (containsKeywords(elName, ['button', 'btn']))
         return 'Button';
