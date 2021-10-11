@@ -44,6 +44,14 @@ export function activate(context: vscode.ExtensionContext)
 			codeGeneration(projectFile.fsPath);
 		});
 	}));
+
+	vscode.workspace.findFiles('**/*.mds').then(
+		projectFiles => projectFiles.forEach(projectFile =>
+		{
+			const scriptPath = path.dirname(projectFile.fsPath) + path.sep + 'Script' + path.sep;
+			generateJsConfig(scriptPath, true);
+		})
+	);
 }
 
 /**

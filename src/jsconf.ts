@@ -7,7 +7,7 @@ import * as fs from 'fs';
  * Generates both jsconfig.json and tsconfig.json for project-related modules
  * @param path Path to scripts location where jsconfig should be created
  */
-export async function generateJsConfig(baseFilePath: string)
+export async function generateJsConfig(baseFilePath: string, updateOnly: boolean = false)
 {
 	if (!vscode.workspace.workspaceFolders?.length)
 		return;
@@ -19,15 +19,14 @@ export async function generateJsConfig(baseFilePath: string)
     const generatedApiTsConfig = vscode.Uri.file(generatedApiFolderPath + '/tsconfig.json');
 
     const generatedApiFolderRelPath = path.relative(baseFilePath, generatedApiFolder.fsPath);
-    console.log("generateJsConfig for " + baseFilePath);
+    console.log("generateJsConfig for " + baseFilePath + ", update only: " + updateOnly);
 
     const extension = vscode.extensions.getExtension("deitry.testcomplete");
     const extensionPath = path.resolve(extension?.extensionPath ?? __filename, `../..`)
 
 	const targetFile = vscode.Uri.file(baseFilePath + path.sep + "jsconfig.json");
 
-    
-    if (!UpdatePathIfFileExists(targetFile, extensionPath))
+    if (!UpdatePathIfFileExists(targetFile, extensionPath) && !updateOnly)
     {
         let wsedit = new vscode.WorkspaceEdit();
         wsedit.createFile(targetFile, { overwrite: true });
@@ -38,7 +37,7 @@ export async function generateJsConfig(baseFilePath: string)
         await vscode.workspace.fs.writeFile(targetFile, Buffer.from(jsConfigContent, 'utf8'));
     }
 
-    if (!UpdatePathIfFileExists(generatedApiTsConfig, extensionPath))
+    if (!UpdatePathIfFileExists(generatedApiTsConfig, extensionPath) && !updateOnly)
     {
         let wsedit = new vscode.WorkspaceEdit();
         wsedit.createFile(generatedApiTsConfig, { overwrite: true });
