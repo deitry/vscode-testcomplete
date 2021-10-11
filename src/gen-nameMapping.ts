@@ -104,6 +104,7 @@ function getTypeFromProperties(el: IKeyObject): string
             switch (property.at_Name)
             {
                 case 'ObjectType':
+                case 'ClrClassName':
                 case 'RootVisual.ClrClassName':
                     return property.Value.at_Value;
                 case 'WndClass':
@@ -124,6 +125,7 @@ function getTypeFromProperties(el: IKeyObject): string
             switch (property.at_Name)
             {
                 case 'ObjectType':
+                case 'ClrClassName':
                 case 'RootVisual.ClrClassName':
                     return property.Value.at_Value;
                 case 'WndClass':
