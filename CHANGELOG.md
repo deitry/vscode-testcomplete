@@ -4,6 +4,13 @@ All notable changes to the "vscode-testcomplete" extension will be documented in
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.5]
+- testcomplete-ts-api update
+- Introduce `testcomplete.castMappedItemsToKnownTypes` configuration option.
+It is set to true by default and enables automatic UI Element type casting to known values.
+It helps to support custom type names like `MainWindow`, which will be treated just like `Window`, `MyCustomButton` as just `Button` etc.
+If false, generated name mappings `.d.ts` may contain invalid object types.
+
 ## [0.0.4]
 - Update TestComplete API submodule
 - Update existing `tsconfig.json`/`jsconfig.json` instead of replacing.
