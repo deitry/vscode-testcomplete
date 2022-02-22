@@ -92,7 +92,43 @@ function convertWndClass(wndClass: string): string
     return wndClass;
 }
 
+const KnownTypes =
+[
+    "Window",
+    "Form",
+    "Dialog",
+    "ComboBox",
+    "TextBlock",
+    "Button",
+    "Edit",
+    "Control",
+];
+
+function castToKnownTypes(type: string): string
+{
+    const bypass = !vscode.workspace
+        .getConfiguration("testcomplete", null)
+        .get("castMappedItemsToKnownTypes", true);
+
+    if (bypass || KnownTypes.includes(type))
+        return type;
+
+    for (let knownType of KnownTypes)
+    {
+        if (type.includes(knownType))
+            return knownType;
+    }
+
+    return "Element";
+}
+
 function getTypeFromProperties(el: IKeyObject): string
+{
+    let type = getTypeFromPropertiesImpl(el).replace(" ", "");
+    return castToKnownTypes(type);
+}
+
+function getTypeFromPropertiesImpl(el: IKeyObject): string
 {
     if (!el?.Properties)
         return "";

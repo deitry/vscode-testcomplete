@@ -45,6 +45,19 @@
 				"title": "Generate project-related modules",
 				"category": "TestComplete"
 			}
+		],
+		"configuration":[
+			{
+				"title": "TestComplete",
+				"properties": {
+					"testcomplete.castMappedItemsToKnownTypes": {
+                        "type": "boolean",
+                        "default": true,
+                        "scope": "resource",
+                        "description": "If true, types of mapped items will be casted to known values. Otherwise, if mapped object has type property, it will be used as is."
+                    }
+				}
+			}
 		]
 	},
 	"scripts": {
