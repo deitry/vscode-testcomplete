@@ -288,6 +288,19 @@ function processChildren<T>(children: T | Array<T>, func: Function)
     else func(children);
 }
 
+function printDotPath(elements: string[], indent: string, type: string): string
+{
+    if (elements.length == 1)
+        return indent + elements[0] + `: ${type};\n`;
+
+    let result = indent + elements[0] + ": {\n";
+    if (elements.length > 1)
+        result += printDotPath(elements.slice(1), indent + "    ", type);
+
+    result += indent + "}\n"
+    return result;
+}
+
 function generatePropsDeclarations(obj: IKeyObject): string
 {
     let result = "";
@@ -297,8 +310,8 @@ function generatePropsDeclarations(obj: IKeyObject): string
             ? convertPropertyType(property.Value.at_PropertyType)
             : 'string';
 
-        // FIXME: if property contains dots in name, it should be considered as child object
-        result += `    ${property.at_Name.replace('.', '_')}: ${type};\n`;
+        let parts = property.at_Name.split('.');
+        result += printDotPath(parts, "    ", type);
     }
 
     processChildren(obj.Properties?.Property, processProperty);
