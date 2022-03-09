@@ -4,6 +4,9 @@ All notable changes to the "vscode-testcomplete" extension will be documented in
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.6]
+- Proper handling of property paths with multiple periods (https://github.com/deitry/vscode-testcomplete/issues/2)
+
 ## [0.0.5]
 - testcomplete-ts-api update
 - Introduce `testcomplete.castMappedItemsToKnownTypes` configuration option.
