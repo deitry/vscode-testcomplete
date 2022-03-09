@@ -4,6 +4,9 @@ All notable changes to the "vscode-testcomplete" extension will be documented in
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.7]
+- Fix missing testcomplete-ts-api submodule in the VSIX package
+
 ## [0.0.6]
 - Proper handling of property paths with multiple periods (https://github.com/deitry/vscode-testcomplete/issues/2)
 
